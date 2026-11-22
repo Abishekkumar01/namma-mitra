@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+data/*.db
+data/*.db-wal
+data/*.db-shm
+logs/
+data/pdf/
+.env
+*.log
+
+# Reference screenshots stay local (not for the repo)
+reference/
+reference pics from sakala poc/

@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="kn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Namma Mitra · Government of Karnataka</title>
+<meta name="description" content="Namma Mitra: Government of Karnataka citizen services on WhatsApp (demonstration)">
+<link rel="icon" href="/static/img/gok_logo.jpg">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="splash" id="splash" role="status" aria-label="Loading Namma Mitra">
+  <div class="splash-inner">
+    <div class="splash-seal"><img src="/static/img/gok_logo.jpg" alt="Government of Karnataka"></div>
+    <div class="splash-kn">ಕರ್ನಾಟಕ ಸರ್ಕಾರ</div>
+    <div class="splash-en">GOVERNMENT OF KARNATAKA</div>
+    <div class="splash-title">ನಮ್ಮ ಮಿತ್ರ <span>·</span> Namma Mitra</div>
+    <div class="splash-tag">CITIZEN SERVICES ON WHATSAPP</div>
+    <div class="splash-bar"><i></i></div>
+  </div>
+</div>
+
+<header class="topbar">
+  <img class="seal" src="/static/img/gok_logo.jpg" alt="Government of Karnataka">
+  <div class="brand">
+    <div class="eyebrow">GOVERNMENT OF KARNATAKA · SEVA ONE (ನಮ್ಮ ಸೇವೆ) SERVICES ON WHATSAPP</div>
+    <div class="name"><span class="kn">ನಮ್ಮ ಮಿತ್ರ</span> <span class="dot">·</span> Namma Mitra <span class="sub">Proof of Concept</span></div>
+  </div>
+  <div class="grow"></div>
+  <div class="pill live"><i></i>SIMULATION · NO LIVE DATA</div>
+  <div class="langs" id="langs">
+    <button data-lang="kn" class="on">ಕನ್ನಡ</button>
+    <button data-lang="en">English</button>
+  </div>
+  <a class="tool" href="/logs" target="_blank" title="Trace logs">Logs</a>
+  <button class="tool" id="resetBtn" title="Start a fresh chat">New chat</button>
+</header>
+
+<main class="stage">
+
+  <!-- Left: services + demo inputs -->
+  <aside class="rail left">
+    <div class="rail-title">SEVA ONE SERVICES <span class="muted">· sevaone.karnataka.gov.in</span></div>
+    <div class="svc-list" id="svcList"></div>
+    <div class="rail-title">DEMO INPUTS</div>
+    <div class="card hint">
+      <div><b>Electricity</b> BESCOM · 1234567890 (zero bill) · 9876543210 (payable)</div>
+      <div><b>Marks card</b> Reg 2026123456 · any DOB</div>
+      <div><b>Ration card / Gruhalakshmi</b> 150100123456</div>
+      <div><b>Yuvanidhi</b> YN2400123456 · <b>DL</b> KA0120190001234</div>
+      <div><b>Vehicle</b> KA01AB1234 · <b>Track</b> RD0052611224567</div>
+      <div class="muted">Any number in the correct format is accepted. All-zero numbers return "not found".</div>
+    </div>
+  </aside>
+
+  <!-- Centre: the phone -->
+  <section class="phone-wrap">
+    <div class="phone" id="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span class="time">9:41</span><span class="icons"><i class="sig"></i><i class="wifi"></i><i class="bat"></i></span></div>
+
+      <div class="wa">
+        <header class="wa-head">
+          <button class="wa-ico back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+          <img class="wa-avatar" src="/static/img/gok_logo.jpg" alt="">
+          <div class="wa-title"><b>Government of Karnataka <i class="verified"></i></b><span id="headSub">online</span></div>
+          <span class="wa-ico"><svg viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/></svg></span>
+          <span class="wa-ico"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1L6.6 10.8z"/></svg></span>
+          <span class="wa-ico"><svg viewBox="0 0 24 24"><path d="M12 7a2 2 0 1 0-.001-4.001A2 2 0 0 0 12 7zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 12 9zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 12 15z"/></svg></span>
+        </header>
+
+        <section class="wa-body" id="messages">
+          <div class="chip" id="dateChip">Today</div>
+          <div class="notice lock" id="noticeEnc"></div>
+          <div class="notice" id="noticeMeta"></div>
+          <div id="stream"></div>
+          <div class="row in typing" id="typing" hidden><div class="bubble"><span class="dots"><i></i><i></i><i></i></span></div></div>
+        </section>
+
+        <div class="say-hi" id="sayHi" hidden><button>Hi</button></div>
+
+        <footer class="wa-composer">
+          <div class="box">
+            <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm-3.5-9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm7 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM12 17.5c2.3 0 4.3-1.5 5-3.5H7c.7 2 2.7 3.5 5 3.5z"/></svg></span>
+            <input id="input" autocomplete="off" placeholder="Message">
+            <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M16.5 6v11.5a4 4 0 0 1-8 0V5a2.5 2.5 0 0 1 5 0v10.5a1 1 0 0 1-2 0V6H10v9.5a2.5 2.5 0 0 0 5 0V5a4 4 0 0 0-8 0v12.5a5.5 5.5 0 0 0 11 0V6h-1.5z"/></svg></span>
+            <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M9 3 7.2 5H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3H9zm3 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></span>
+          </div>
+          <button class="send" id="send" aria-label="Send">
+            <svg class="mic" viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+            <svg class="arrow" viewBox="0 0 24 24"><path d="M1.1 21.76 23 12 1.1 2.24 1.09 9.8 16.75 12 1.09 14.2z"/></svg>
+          </button>
+        </footer>
+
+        <!-- WhatsApp Flow sheet (slides up inside the phone) -->
+        <div class="sheet" id="panel" hidden>
+          <div class="sheet-head">
+            <button class="wa-ico dark" id="panelBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></svg></button>
+            <b id="panelTitle">Service Selection</b>
+            <button class="wa-ico dark" id="panelClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+          </div>
+          <div class="sheet-body" id="panelBody"></div>
+          <div class="sheet-foot"><button class="confirm" id="confirm" disabled>Confirm</button><div class="managed">Managed by the business. <u>Learn more</u></div></div>
+        </div>
+
+        <!-- Payment sheet -->
+        <div class="sheet pay" id="payModal" hidden>
+          <div class="sheet-head pay-head">
+            <img src="/static/img/gok_logo.jpg" alt="">
+            <div><b>Karnataka One · Payment Gateway</b><span>Government of Karnataka</span></div>
+            <button class="wa-ico dark" id="payClose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+          </div>
+          <div class="sheet-body" id="payBody"></div>
+        </div>
+      </div>
+      <div class="homebar"></div>
+    </div>
+  </section>
+
+  <!-- Right: behind the chat -->
+  <aside class="rail right">
+    <div class="rail-title"><i class="dot-live"></i>BEHIND THE CHAT <span class="muted">· live from the trace log</span></div>
+    <ol class="pipeline" id="pipeline"></ol>
+    <div class="card trace" id="traceCard">
+      <div class="muted">Last action</div>
+      <div class="trace-line"><b id="traceId">—</b><a id="traceLink" href="/logs" target="_blank">open trace</a></div>
+      <div class="muted small">Every bot reply carries a trace number. Report an issue as "trace N: expected …".</div>
+    </div>
+  </aside>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
