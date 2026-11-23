@@ -61,14 +61,14 @@ def textarea(id, label, show_if=None, required=True, placeholder=None, min_len=N
                   min_len=min_len, max_len=max_len)
 
 
-def number(id, label, min=None, max=None, show_if=None, required=True, placeholder=None, helper=None):
+def number(id, label, min=None, max=None, show_if=None, required=True, placeholder=None, helper=None, error=None):
     return _field("number", id, label, show_if, required, min=min, max=max,
-                  placeholder=placeholder, helper=helper)
+                  placeholder=placeholder, helper=helper, error=error)
 
 
-def date(id, label, min_days=0, max_days=30, show_if=None, required=True, helper=None):
+def date(id, label, min_days=0, max_days=30, show_if=None, required=True, helper=None, error=None):
     return _field("date", id, label, show_if, required, min_days=min_days, max_days=max_days,
-                  helper=helper)
+                  helper=helper, error=error)
 
 
 def info(id, text_, show_if=None):
@@ -163,7 +163,7 @@ def validate(field, raw, lang):
             return None, tr(STR["invalid_format"], lang)
         lo, hi = field.get("min"), field.get("max")
         if (lo is not None and n < lo) or (hi is not None and n > hi):
-            return None, tr(STR["number_range"], lang).format(min=lo, max=hi)
+            return None, tr(field.get("error") or STR["number_range"], lang).format(min=lo, max=hi)
         return n, None
 
     if ftype == "date":
@@ -172,8 +172,8 @@ def validate(field, raw, lang):
             return None, tr(STR["date_invalid"], lang)
         lo, hi = date_window(field)
         if d < lo or d > hi:
-            return None, tr(STR["date_range"], lang).format(a=lo.strftime("%d-%m-%Y"),
-                                                             b=hi.strftime("%d-%m-%Y"))
+            return None, tr(field.get("error") or STR["date_range"], lang).format(
+                a=lo.strftime("%d-%m-%Y"), b=hi.strftime("%d-%m-%Y"))
         return d.isoformat(), None
 
     s = apply_transform(field, raw)

@@ -203,12 +203,14 @@
     if (f.type === "number") {
       const n = Number(String(v).replace(/,/g, ""));
       if (!Number.isFinite(n)) return UI.invalid_format;
-      if ((f.min != null && n < f.min) || (f.max != null && n > f.max)) return `${f.min} - ${f.max}`;
+      if ((f.min != null && n < f.min) || (f.max != null && n > f.max))
+        return (f.error || UI.number_range || "{min} - {max}").split("{min}").join(f.min).split("{max}").join(f.max);
       return null;
     }
     if (f.type === "date") {
-      if (f.min_date && v < f.min_date) return UI.invalid_format;
-      if (f.max_date && v > f.max_date) return UI.invalid_format;
+      const dmy = x => String(x || "").split("-").reverse().join("-");
+      if ((f.min_date && v < f.min_date) || (f.max_date && v > f.max_date))
+        return (f.error || UI.date_range || "{a} - {b}").split("{a}").join(dmy(f.min_date)).split("{b}").join(dmy(f.max_date));
       return null;
     }
     if (["text", "textarea"].includes(f.type)) {

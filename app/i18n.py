@@ -123,6 +123,8 @@ UI = {
                        "ನೀವು ಸಲ್ಲಿಸಿದ ವಿವರಗಳು ಇವು. ಇವುಗಳನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."),
     "confirm": L("Confirm", "ದೃಢೀಕರಿಸಿ"),
     "select_option": STR["select_option"],
+    "number_range": STR["number_range"],
+    "date_range": STR["date_range"],
     "required": STR["required"],
     "invalid_format": STR["invalid_format"],
     "search": L("Search", "ಹುಡುಕಿ"),

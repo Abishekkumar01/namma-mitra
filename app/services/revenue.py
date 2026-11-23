@@ -82,6 +82,7 @@ class Revenue(Service):
             fk.text("caste", L("Caste / Sub-caste", "ಜಾತಿ / ಉಪಜಾತಿ"), min_len=2,
                     show_if={"action": "apply", "cert": ["caste", "caste_income"]}),
             fk.number("income", L("Annual Family Income (₹)", "ವಾರ್ಷಿಕ ಕುಟುಂಬ ಆದಾಯ (₹)"), min=0, max=999999999,
+                      error=L("Enter the annual family income in rupees, digits only.", "ವಾರ್ಷಿಕ ಕುಟುಂಬ ಆದಾಯವನ್ನು ರೂಪಾಯಿಗಳಲ್ಲಿ, ಅಂಕಿಗಳಲ್ಲಿ ಮಾತ್ರ ನಮೂದಿಸಿ."),
                       placeholder="120000", show_if={"action": "apply", "cert": ["income", "caste_income"]}),
             fk.radio("purpose", L("Purpose", "ಉದ್ದೇಶ"), [fk.opt(k, v) for k, v in PURPOSES.items()], show_if=apply),
             fk.text("app_no", L("Enter your Application Number", "ನಿಮ್ಮ ಅರ್ಜಿ ಸಂಖ್ಯೆ ನಮೂದಿಸಿ"),
