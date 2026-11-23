@@ -71,7 +71,7 @@ def run_route(route, body):
             m["trace_id"], m["ts"], m["dir"] = tr.id, now, "out"
             _persist(sid, "out", m, tr.id)
         lang, ui = engine.ui_for(sid)
-        result.update(trace_id=tr.id, lang=lang, ui=ui)
+        result.update(trace_id=tr.id, lang=lang, ui=ui, services=engine.services_for(sid))
         tracer.end(tr, "ok", output={"n_messages": len(result.get("messages", [])),
                                      "keys": sorted(k for k in result if k != "ui")})
         return 200, result

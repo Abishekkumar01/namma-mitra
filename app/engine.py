@@ -351,3 +351,8 @@ def payment_info(sid, payment_id):
 def ui_for(sid):
     s = load_session(sid)
     return s["lang"], ui_strings(s["lang"])
+
+
+def services_for(sid):
+    """Service list in the session's current language (keeps the side panel in step with the chat)."""
+    return _service_list(ctx_of(load_session(sid)))

@@ -44,6 +44,7 @@
     if (!r.ok) throw new Error("HTTP " + r.status);
     const j = await r.json();
     if (j.lang) { LANG = j.lang; document.documentElement.lang = LANG; }
+    if (j.services && j.services.length) SERVICES = j.services;
     if (j.ui) applyUI(j.ui);
     if (j.trace_id) showTrace(j.trace_id);
     return j;
