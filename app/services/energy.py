@@ -22,10 +22,38 @@ CTYPES = {
     "billing": L("Billing Dispute", "ಬಿಲ್ ವಿವಾದ"),
 }
 C_STAGES = [L("Complaint registered", "ದೂರು ದಾಖಲಾಗಿದೆ"),
-            L("Assigned to Section Officer", "ವಿಭಾಗಾಧಿಕಾರಿಗೆ ನಿಯೋಜಿಸಲಾಗಿದೆ"),
+            L("Assigned to Section Officer", "ಶಾಖಾಧಿಕಾರಿಗೆ ನಿಯೋಜಿಸಲಾಗಿದೆ"),
             L("Lineman dispatched to site", "ಲೈನ್‌ಮ್ಯಾನ್ ಸ್ಥಳಕ್ಕೆ ತೆರಳಿದ್ದಾರೆ"),
             L("Resolved - supply restored", "ಪರಿಹರಿಸಲಾಗಿದೆ - ಪೂರೈಕೆ ಮರುಸ್ಥಾಪನೆ")]
 ACC = r"^\d{10}$"
+# LT-2(a) domestic tariff, FY 2025-26 (KERC order, March 2025): energy charge Rs 5.80/unit,
+# fixed charge Rs 145/kW/month, P&G pension surcharge 36 paise/unit, electricity tax 9% on energy charges.
+ENERGY_RATE = 5.80
+FIXED_PER_KW = 145
+PENSION_SURCHARGE = 0.36
+TAX_RATE = 0.09
+GJ_CAP = 200
+
+
+def bill_breakup(units, load, gj, entitled):
+    """Itemised domestic bill. Gruha Jyothi: free up to the entitlement; above it only the extra
+    units are billed; above 200 units the subsidy does not apply for that month."""
+    fixed = round(FIXED_PER_KW * load, 2)
+    energy = round(units * ENERGY_RATE, 2)
+    surcharge = round(units * PENSION_SURCHARGE, 2)
+    tax = round(energy * TAX_RATE, 2)
+    gross = round(fixed + energy + surcharge + tax, 2)
+    if not gj or units > GJ_CAP:
+        net = gross
+    elif units <= entitled:
+        net = 0.0
+    else:
+        extra = units - entitled
+        net = round(extra * ENERGY_RATE * (1 + TAX_RATE) + extra * PENSION_SURCHARGE, 2)
+    return {"fixed": fixed, "energy": energy, "surcharge": surcharge, "tax": tax, "gross": gross,
+            "subsidy": round(gross - net, 2), "net": net, "over_cap": gj and units > GJ_CAP}
+
+
 ESCOM_HQ = {"bescom": L("Bengaluru", "ಬೆಂಗಳೂರು"), "mescom": L("Mangaluru", "ಮಂಗಳೂರು"), "hescom": L("Hubballi", "ಹುಬ್ಬಳ್ಳಿ"),
             "gescom": L("Kalaburagi", "ಕಲಬುರಗಿ"), "cesc": L("Mysuru", "ಮೈಸೂರು")}
 ESCOM_WEB = {"bescom": "bescom.karnataka.gov.in", "mescom": "mescom.karnataka.gov.in", "hescom": "hescom.karnataka.gov.in",
@@ -54,21 +82,13 @@ def consumer(escom, account):
         gj, entitled = False, 0
     bill_date = gen.today() - dt.timedelta(days=r.randint(2, 9))
     due = bill_date + dt.timedelta(days=15)
-    fixed = 145 * load
-    energy = round(units * 5.90, 2)
-    if gj and units <= entitled:
-        net, gj_benefit = 0.0, round(energy + fixed, 2)
-    elif gj:
-        excess = units - entitled
-        net = round(excess * 5.90 * 1.09, 2)
-        gj_benefit = round(energy + fixed - net, 2)
-    else:
-        net, gj_benefit = round((energy + fixed) * 1.09, 2), 0.0
+    b = bill_breakup(units, load, gj, entitled)
+    net, gj_benefit = b["net"], b["subsidy"]
     return {"name": p["name"], "address": L(f"#{n}, {cross}th Cross, {area_en}, {city_en}",
                                             f"#{n}, {cross}ನೇ ಅಡ್ಡರಸ್ತೆ, {area_kn}, {city_kn}"),
             "load": load, "avg": avg, "gj": gj, "entitled": entitled, "units": units,
             "bill_date": bill_date.isoformat(), "due": due.isoformat(), "net": net,
-            "gj_benefit": gj_benefit, "rr": f"{city_en[:3].upper()}{r.randint(10, 99)}-{r.randint(1000, 9999)}",
+            "gj_benefit": gj_benefit, "breakup": b, "rr": f"{city_en[:3].upper()}{r.randint(10, 99)}-{r.randint(1000, 9999)}",
             "subdiv": L(f"{area_en} Sub-Division", f"{area_kn} ಉಪವಿಭಾಗ")}
 
 
@@ -148,9 +168,22 @@ class Energy(Service):
             f"*{en} - ವಿದ್ಯುತ್ ಬಿಲ್*\n\nಗ್ರಾಹಕರು: *{ctx.t(c['name'])}*\nಖಾತೆ ಸಂಖ್ಯೆ: {account}\n"
             f"ವಿಳಾಸ: {ctx.t(c['address'])}\nದರ: ಎಲ್‌ಟಿ-2(ಎ) ಗೃಹ ಬಳಕೆ | {c['load']} ಕಿ.ವ್ಯಾ\n\n"
             f"ಬಿಲ್ ತಿಂಗಳು: {gen.month_year(bd, 'kn')}\nಬಳಸಿದ ಯೂನಿಟ್: *{c['units']}*\n{gj_line}\n"))
+        b = c["breakup"]
+        head += ctx.t(L(
+            f"\n*Charges:*\nFixed charges ({c['load']} kW × ₹{FIXED_PER_KW}): {gen.inr(b['fixed'])}\n"
+            f"Energy charges ({c['units']} × ₹{ENERGY_RATE:.2f}): {gen.inr(b['energy'])}\n"
+            f"Pension surcharge ({c['units']} × ₹{PENSION_SURCHARGE:.2f}): {gen.inr(b['surcharge'])}\n"
+            f"Electricity tax (9%): {gen.inr(b['tax'])}\n",
+            f"\n*ಶುಲ್ಕಗಳು:*\nನಿಗದಿತ ಶುಲ್ಕ ({c['load']} ಕಿ.ವ್ಯಾ × ₹{FIXED_PER_KW}): {gen.inr(b['fixed'])}\n"
+            f"ಇಂಧನ ಶುಲ್ಕ ({c['units']} × ₹{ENERGY_RATE:.2f}): {gen.inr(b['energy'])}\n"
+            f"ಪಿಂಚಣಿ ಹೆಚ್ಚುವರಿ ಶುಲ್ಕ ({c['units']} × ₹{PENSION_SURCHARGE:.2f}): {gen.inr(b['surcharge'])}\n"
+            f"ವಿದ್ಯುತ್ ತೆರಿಗೆ (9%): {gen.inr(b['tax'])}\n"))
         if c["gj_benefit"]:
-            head += ctx.t(L(f"Gruha Jyothi subsidy: {gen.inr(c['gj_benefit'])}\n",
-                            f"ಗೃಹ ಜ್ಯೋತಿ ಸಹಾಯಧನ: {gen.inr(c['gj_benefit'])}\n"))
+            head += ctx.t(L(f"Gruha Jyothi subsidy: -{gen.inr(c['gj_benefit'])}\n",
+                            f"ಗೃಹ ಜ್ಯೋತಿ ಸಹಾಯಧನ: -{gen.inr(c['gj_benefit'])}\n"))
+        elif b["over_cap"]:
+            head += ctx.t(L(f"Gruha Jyothi: not applicable this month (consumption above {GJ_CAP} units)\n",
+                            f"ಗೃಹ ಜ್ಯೋತಿ: ಈ ತಿಂಗಳು ಅನ್ವಯಿಸುವುದಿಲ್ಲ ({GJ_CAP} ಯೂನಿಟ್‌ಗಿಂತ ಹೆಚ್ಚು ಬಳಕೆ)\n"))
         bill_doc = self._bill_doc(ctx, escom, account, c)
         if paid:
             msg = head + ctx.t(L(f"\n*No dues.* Paid {gen.inr(paid['amount'])} on {paid['date']}\nTxn: {paid['txn']}",
@@ -183,11 +216,15 @@ class Energy(Service):
                     [ctx.t(L("Bill Date", "ಬಿಲ್ ದಿನಾಂಕ")), gen.dmy(c["bill_date"])], [ctx.t(L("Due Date", "ಕೊನೆಯ ದಿನಾಂಕ")), gen.dmy(c["due"])],
                     [ctx.t(L("Units Consumed", "ಬಳಸಿದ ಯೂನಿಟ್")), c["units"]],
                     [ctx.t(L("Gruha Jyothi Entitlement", "ಗೃಹ ಜ್ಯೋತಿ ಅರ್ಹತೆ")), f"{c['entitled']} " + ctx.t(L("units", "ಯೂನಿಟ್")) if c["gj"] else "-"],
-                    [ctx.t(L("Fixed Charges", "ನಿಗದಿತ ಶುಲ್ಕ")), gen.inr(145 * c["load"])],
-                    [ctx.t(L("Energy Charges", "ಇಂಧನ ಶುಲ್ಕ")), gen.inr(c["units"] * 5.90)],
-                    [ctx.t(L("Gruha Jyothi Subsidy", "ಗೃಹ ಜ್ಯೋತಿ ಸಹಾಯಧನ")), "-" + gen.inr(c["gj_benefit"])],
+                    [ctx.t(L(f"Fixed Charges ({c['load']} kW × ₹{FIXED_PER_KW})", f"ನಿಗದಿತ ಶುಲ್ಕ ({c['load']} ಕಿ.ವ್ಯಾ × ₹{FIXED_PER_KW})")), gen.inr(c["breakup"]["fixed"])],
+                    [ctx.t(L(f"Energy Charges ({c['units']} × ₹{ENERGY_RATE:.2f})", f"ಇಂಧನ ಶುಲ್ಕ ({c['units']} × ₹{ENERGY_RATE:.2f})")), gen.inr(c["breakup"]["energy"])],
+                    [ctx.t(L(f"P&G Pension Surcharge ({c['units']} × ₹{PENSION_SURCHARGE:.2f})", f"ಪಿಂಚಣಿ ಹೆಚ್ಚುವರಿ ಶುಲ್ಕ ({c['units']} × ₹{PENSION_SURCHARGE:.2f})")), gen.inr(c["breakup"]["surcharge"])],
+                    [ctx.t(L("Electricity Tax (9% of energy charges)", "ವಿದ್ಯುತ್ ತೆರಿಗೆ (ಇಂಧನ ಶುಲ್ಕದ 9%)")), gen.inr(c["breakup"]["tax"])],
+                    [ctx.t(L("Gross Amount", "ಒಟ್ಟು ಮೊತ್ತ")), gen.inr(c["breakup"]["gross"])],
+                    [ctx.t(L("Gruha Jyothi Subsidy", "ಗೃಹ ಜ್ಯೋತಿ ಸಹಾಯಧನ")), ("-" + gen.inr(c["gj_benefit"])) if c["gj_benefit"] else "-"],
                     [ctx.t(L("Net Payable", "ಪಾವತಿಸಬೇಕಾದ ಮೊತ್ತ")), gen.inr(c["net"])]]}],
-            "notes": [ctx.t(L("Helpline: 1912 (24x7)", "ಸಹಾಯವಾಣಿ: 1912 (24x7)"))],
+            "notes": [ctx.t(L("Tariff LT-2(a) as per the KERC tariff order for FY 2025-26. Helpline: 1912 (24x7).",
+                              "ಕೆಇಆರ್‌ಸಿ 2025-26 ದರ ಆದೇಶದ ಪ್ರಕಾರ ಎಲ್‌ಟಿ-2(ಎ) ದರ. ಸಹಾಯವಾಣಿ: 1912 (24x7)."))],
             "signatory": {"name": ctx.t(K.ESCOM_NAME[escom]), "designation": ctx.t(c["subdiv"])}})
 
     def on_payment(self, ctx, p):

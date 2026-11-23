@@ -6,6 +6,8 @@ All ten services are services listed on **Seva One** (sevaone.karnataka.gov.in, 
 
 **Documents:** clicking any PDF bubble opens the real PDF in a new tab. The HTML view at `/doc/<id>` has Download PDF and Print buttons.
 
+**Electricity tariff:** bills follow the KERC LT-2(a) domestic tariff for FY 2025-26: fixed ₹145/kW, energy ₹5.80/unit, P&G pension surcharge 36 paise/unit, electricity tax 9% of energy charges. Gruha Jyothi is free up to the entitlement, bills only the extra units above it, and does not apply above 200 units.
+
 **Not-found demo:** any ID whose digits are all zero (`0000000000`, `RD0000000000000`, `YN00000000`) returns a clean "no record found" error and asks again.
 
 **Status that progresses live:** anything you create during the demo moves one stage every 30 seconds: certificate, duplicate marks card, ration card and Yuvanidhi applications, ESCOM complaints and grievances. Apply, wait about 2 minutes, then tap *Track Status*. Change the speed with the `NM_STAGE_SECONDS` environment variable.
@@ -15,7 +17,8 @@ All ten services are services listed on **Seva One** (sevaone.karnataka.gov.in, 
 | Revenue Department Certificates (AJSK) | any name, Aadhaar `2345 6789 0123` | Review, declaration, `RD…` number, ₹25 fee, acknowledgement PDF, track, certificate PDF |
 | Revenue, track | `RD0052611224567` | Deterministic status; some numbers show *issued* with the certificate PDF |
 | Electricity (BESCOM) | BESCOM, `1234567890` | Shivakumar S, **zero bill under Gruha Jyothi**, bill PDF |
-| Electricity (BESCOM) | BESCOM, `9876543210` | Gruha Jyothi exceeded, **₹347.27 payable**, Pay, receipt PDF |
+| Electricity (BESCOM) | BESCOM, `9876543210` | Gruha Jyothi exceeded (175 units, entitled 121), **₹360.83 payable**, Pay, receipt PDF |
+| Electricity (BESCOM) | BESCOM, `1111111111` | Not registered under Gruha Jyothi, full itemised bill **₹1,504.12** |
 | Electricity, PGRS complaint | any 10-digit account | Docket like `BES2611221234`, trackable |
 | Gruhalakshmi (WCD) | RC `150100123456` | Nethra K, application status, ₹2,000 DBT history; e-KYC pending; sanction order PDF |
 | Yuvanidhi (Industrial Training and Employment) | apply with any name and Aadhaar | `YN…` number, acknowledgement PDF, 4-stage verification, then monthly self-declaration |

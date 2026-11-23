@@ -255,7 +255,7 @@ class Revenue(Service):
             base = f"{dist} ಜಿಲ್ಲೆ, {taluk} ತಾಲ್ಲೂಕಿನ ನಿವಾಸಿಯಾದ {hon[1]} {name}, {father} ಅವರ {rel[1]},"
             body = {"income": f"{base} ಇವರ ಕುಟುಂಬದ ಎಲ್ಲಾ ಮೂಲಗಳಿಂದ ವಾರ್ಷಿಕ ಆದಾಯ {income} ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ.",
                     "caste": f"{base} ಇವರು {extra.get('caste', '')} ಜಾತಿಗೆ ಸೇರಿದ್ದು, ಇದು ಕರ್ನಾಟಕ ಸರ್ಕಾರದ ಆದೇಶದಂತೆ {cat} ಅಡಿ ಮಾನ್ಯವಾಗಿದೆ ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ.",
-                    "caste_income": f"{base} ಇವರು {extra.get('caste', '')} ಜಾತಿ ({cat}) ಗೆ ಸೇರಿದ್ದು, ಕುಟುಂಬದ ವಾರ್ಷಿಕ ಆದಾಯ {income} ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ.",
+                    "caste_income": f"{base} ಇವರು {extra.get('caste', '')} ಜಾತಿಗೆ ({cat}) ಸೇರಿದ್ದು, ಕುಟುಂಬದ ವಾರ್ಷಿಕ ಆದಾಯ {income} ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ.",
                     "residence": f"{base} ಇವರು ಕಳೆದ 5 ವರ್ಷಗಳಿಂದ ಮೇಲ್ಕಂಡ ವಿಳಾಸದಲ್ಲಿ ವಾಸವಾಗಿದ್ದಾರೆ ಎಂದು ಪ್ರಮಾಣೀಕರಿಸಲಾಗಿದೆ."}[cert]
         else:
             base = f"This is to certify that {hon[0]} {name}, {rel[0]} {father}, resident of {taluk} Taluk, {dist} District,"

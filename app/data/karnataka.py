@@ -63,7 +63,7 @@ LOCALITIES = {
     "mescom": [("Kadri", "ಕದ್ರಿ", "Mangaluru", "ಮಂಗಳೂರು"), ("Bejai", "ಬಿಜೈ", "Mangaluru", "ಮಂಗಳೂರು"),
                ("Manipal", "ಮಣಿಪಾಲ", "Udupi", "ಉಡುಪಿ"), ("Vinoba Nagar", "ವಿನೋಬ ನಗರ", "Shivamogga", "ಶಿವಮೊಗ್ಗ")],
     "hescom": [("Vidyanagar", "ವಿದ್ಯಾನಗರ", "Hubballi", "ಹುಬ್ಬಳ್ಳಿ"), ("Saptapur", "ಸಪ್ತಾಪುರ", "Dharwad", "ಧಾರವಾಡ"),
-               ("Tilakwadi", "ತಿಳಕವಾಡಿ", "Belagavi", "ಬೆಳಗಾವಿ"), ("Navanagar", "ನವನಗರ", "Bagalkote", "ಬಾಗಲಕೋಟೆ")],
+               ("Tilakwadi", "ಟಿಳಕವಾಡಿ", "Belagavi", "ಬೆಳಗಾವಿ"), ("Navanagar", "ನವನಗರ", "Bagalkote", "ಬಾಗಲಕೋಟೆ")],
     "gescom": [("Aland Road", "ಆಳಂದ ರಸ್ತೆ", "Kalaburagi", "ಕಲಬುರಗಿ"), ("Cowl Bazaar", "ಕೌಲ್ ಬಜಾರ್", "Ballari", "ಬಳ್ಳಾರಿ"),
                ("Gandhi Chowk", "ಗಾಂಧಿ ಚೌಕ", "Bidar", "ಬೀದರ್"), ("Station Road", "ಸ್ಟೇಷನ್ ರಸ್ತೆ", "Raichur", "ರಾಯಚೂರು")],
     "cesc": [("Kuvempunagar", "ಕುವೆಂಪುನಗರ", "Mysuru", "ಮೈಸೂರು"), ("Saraswathipuram", "ಸರಸ್ವತಿಪುರಂ", "Mysuru", "ಮೈಸೂರು"),

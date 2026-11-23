@@ -60,7 +60,7 @@ STR = {
     "lang_changed": L("Language changed successfully.", "ಭಾಷೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ."),
 
     # ---- flow control ----
-    "abort_hint": L("> To stop the flow reply with *ABORT*", "> ಫ್ಲೋ ನಿಲ್ಲಿಸಲು *ABORT* ಎಂದು ಉತ್ತರಿಸಿ"),
+    "abort_hint": L("> To stop the flow reply with *ABORT*", "> ಈ ಪ್ರಕ್ರಿಯೆಯನ್ನು ನಿಲ್ಲಿಸಲು *ABORT* ಎಂದು ಉತ್ತರಿಸಿ"),
     "flow_aborted": L("The current request has been cancelled. Type *Hi* to start again.",
                       "ಪ್ರಸ್ತುತ ವಿನಂತಿಯನ್ನು ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಾರಂಭಿಸಲು *Hi* ಎಂದು ಟೈಪ್ ಮಾಡಿ."),
     "nothing_to_abort": L("There is no active request to cancel. Type *Hi* to see the menu.",
